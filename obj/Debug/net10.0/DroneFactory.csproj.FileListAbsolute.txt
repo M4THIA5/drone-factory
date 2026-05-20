@@ -1,0 +1,14 @@
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/DroneFactory.GeneratedMSBuildEditorConfig.editorconfig
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/DroneFactory.AssemblyInfoInputs.cache
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/DroneFactory.AssemblyInfo.cs
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/DroneFactory.csproj.CoreCompileInputs.cache
+/home/mathias/ESGI/design-patern/DroneFactory/bin/Debug/net10.0/DroneFactory
+/home/mathias/ESGI/design-patern/DroneFactory/bin/Debug/net10.0/DroneFactory.deps.json
+/home/mathias/ESGI/design-patern/DroneFactory/bin/Debug/net10.0/DroneFactory.runtimeconfig.json
+/home/mathias/ESGI/design-patern/DroneFactory/bin/Debug/net10.0/DroneFactory.dll
+/home/mathias/ESGI/design-patern/DroneFactory/bin/Debug/net10.0/DroneFactory.pdb
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/DroneFactory.dll
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/refint/DroneFactory.dll
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/DroneFactory.pdb
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/DroneFactory.genruntimeconfig.cache
+/home/mathias/ESGI/design-patern/DroneFactory/obj/Debug/net10.0/ref/DroneFactory.dll
