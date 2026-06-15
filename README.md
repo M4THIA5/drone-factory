@@ -43,8 +43,28 @@ dotnet run < commandes.txt
 | `INSTRUCTIONS <qty> <Drone>[, ...]` | Émet la séquence d'instructions d'assemblage. |
 | `VERIFY <qty> <Drone>[, ...]` | Répond `AVAILABLE` ou `UNAVAILABLE` selon l'état du stock. |
 | `PRODUCE <qty> <Drone>[, ...]` | Décrémente le stock et produit les drones (`STOCK_UPDATED`). |
+| `ADD_TEMPLATE <Nom>, <Piece1>, ..., <PieceN>` | Enregistre un nouveau modèle de drone (`TEMPLATE_ADDED`), utilisable ensuite dans toutes les commandes. |
 
-Drones supportés : `DXF-1`, `RDL-1`, `WDS-1`, `DYM-1`.
+Drones supportés au démarrage : `DXF-1`, `RDL-1`, `WDS-1`, `DYM-1`. D'autres peuvent être
+ajoutés à l'exécution via `ADD_TEMPLATE`.
+
+### Templates de drones (`ADD_TEMPLATE`)
+
+Un template doit contenir exactement une pièce de chaque type (coque, module principal,
+générateur, module de déplacement, module de contrôle, système). Il est validé avant
+enregistrement :
+
+- le système doit être installable sur le module principal (types du système ⊆ types du core) ;
+- le module de contrôle doit être compatible avec le système (au moins un type en commun) ;
+- le drone doit appartenir à au moins une catégorie : **Aérien**, **Marin**, **Terrestre** ou
+  **Submersible**.
+
+Tout manquement renvoie une erreur `ERROR ...` explicite. Exemple valide :
+
+```
+ADD_TEMPLATE MARIN-1, Hull_HG1, Core_CG1, Generator_GG1, Move_MM1, Processor_PG1, System_SG1
+TEMPLATE_ADDED
+```
 
 ### Exemple
 
