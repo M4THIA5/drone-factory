@@ -1,4 +1,3 @@
-// Commands/AddTemplateCommand.cs
 namespace DroneFactory;
 
 public class AddTemplateCommand : DroneCommand

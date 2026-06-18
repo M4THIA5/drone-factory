@@ -8,7 +8,6 @@ public record DroneRecipe(
     string Processor,
     string System);
 
-/// <summary>Catégorie « kind » d'une pièce, déterminée par son préfixe.</summary>
 public enum PieceKind
 {
     Hull,
@@ -35,7 +34,6 @@ public static class Catalogue
         "System_SG1", "System_S3D1",
     };
 
-    /// <summary>Tags de type de chaque pièce/système (S, F, M, L, 2D, 3D).</summary>
     public static readonly IReadOnlyDictionary<string, IReadOnlySet<string>> PieceTypes =
         new Dictionary<string, IReadOnlySet<string>>
         {
@@ -75,14 +73,12 @@ public static class Catalogue
             ["DYM-1"] = new("Hull_HG1", "Core_CG1",  "Generator_GG1", "Move_MM1", "Processor_PG1",  "System_SG1"),
         };
 
-    /// <summary>Types d'une pièce, ensemble vide si la pièce n'a pas de tag.</summary>
     public static IReadOnlySet<string> TypesOf(string piece) =>
         PieceTypes.TryGetValue(piece, out var types) ? types : EmptySet;
 
     public static bool IsKnownPiece(string name) =>
         PieceTypes.ContainsKey(name);
 
-    /// <summary>Détermine le kind d'une pièce d'après son préfixe.</summary>
     public static PieceKind KindOf(string piece) => piece switch
     {
         _ when piece.StartsWith("Hull_") => PieceKind.Hull,

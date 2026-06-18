@@ -1,60 +1,39 @@
 namespace DroneFactory;
 
-/// <summary>
-/// Calcul des catégories d'un drone (Aérien/Marin/Terrestre/Submersible) et
-/// validation des contraintes de compatibilité de son recette.
-/// </summary>
+using DroneFactory.Categories;
+
 public static class Categorizer
 {
-    /// <summary>Catégories auxquelles appartient le drone décrit par <paramref name="r"/>.</summary>
-    public static IReadOnlyList<string> Categories(DroneRecipe r)
+    private static readonly IReadOnlyList<ICategoryRule> Rules = new ICategoryRule[]
     {
-        var hull = Catalogue.TypesOf(r.Hull);
-        var generator = Catalogue.TypesOf(r.Generator);
-        var move = Catalogue.TypesOf(r.Move);
-        var system = Catalogue.TypesOf(r.System);
+        new AerialRule(),
+        new MarineRule(),
+        new TerrestrialRule(),
+        new SubmersibleRule(),
+    };
 
-        var categories = new List<string>();
+    public static IReadOnlyList<string> Categories(DroneRecipe r) =>
+        Rules.Where(rule => rule.Matches(r))
+             .Select(rule => rule.Name)
+             .ToList();
 
-        // Aérien (F) : module de déplacement (F) + système (3D)
-        if (move.Contains("F") && system.Contains("3D"))
-            categories.Add("Aérien");
-
-        // Marin (M) : coque étanche (S) + système (2D) + module de déplacement (M)
-        if (hull.Contains("S") && system.Contains("2D") && move.Contains("M"))
-            categories.Add("Marin");
-
-        // Terrestre (L) : module de déplacement (L) + système (2D)
-        if (move.Contains("L") && system.Contains("2D"))
-            categories.Add("Terrestre");
-
-        // Submersible (S) : coque, générateur et déplacement (S) + système (3D)
-        if (hull.Contains("S") && generator.Contains("S") && move.Contains("S") && system.Contains("3D"))
-            categories.Add("Submersible");
-
-        return categories;
-    }
-
-    /// <summary>
-    /// Vérifie les compatibilités (Core↔Système, Processeur↔Système) et l'appartenance
-    /// à au moins une catégorie. Lève une <see cref="CommandException"/> si invalide.
-    /// </summary>
     public static void Validate(DroneRecipe r)
     {
         var core = Catalogue.TypesOf(r.Core);
         var processor = Catalogue.TypesOf(r.Processor);
         var system = Catalogue.TypesOf(r.System);
 
-        // Le système installé doit être supporté par le module principal.
         if (!system.IsSubsetOf(core))
             throw new CommandException($"`{r.System}` cannot be installed on `{r.Core}`");
 
-        // Le module de contrôle doit être compatible avec le système installé.
         if (!processor.Overlaps(system))
             throw new CommandException($"`{r.Processor}` is not compatible with `{r.System}`");
 
-        // Un drone doit appartenir à au moins une catégorie.
-        if (Categories(r).Count == 0)
-            throw new CommandException("drone matches no category (Aérien, Marin, Terrestre or Submersible)");
+        var categories = Categories(r);
+        if (categories.Count == 0)
+        {
+            var knownCategories = string.Join(", ", Rules.Select(rule => rule.Name));
+            throw new CommandException($"Drone matches no category ({knownCategories})");
+        }
     }
 }
