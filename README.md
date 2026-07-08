@@ -44,6 +44,9 @@ dotnet run < commandes.txt
 | `VERIFY <qty> <Drone>[, ...]` | Répond `AVAILABLE` ou `UNAVAILABLE` selon l'état du stock. |
 | `PRODUCE <qty> <Drone>[, ...]` | Décrémente le stock et produit les drones (`STOCK_UPDATED`). |
 | `ADD_TEMPLATE <Nom>, <Piece1>, ..., <PieceN>` | Enregistre un nouveau modèle de drone (`TEMPLATE_ADDED`), utilisable ensuite dans toutes les commandes. |
+| `ORDER <qty> <Drone>[, ...]` | Enregistre une commande de vente dans le carnet de commandes (`ORDER_REGISTERED`). |
+| `SEND` | Expédie les drones déjà produits pour honorer les commandes en attente (`SENT <qty> <Drone>` par ligne, ou `NOTHING_TO_SEND`). |
+| `LIST_ORDER` | Liste les commandes de vente encore en attente (`<qty> <Drone>` par ligne, ou `NO_ORDER`). |
 
 Drones supportés au démarrage : `DXF-1`, `RDL-1`, `WDS-1`, `DYM-1`. D'autres peuvent être
 ajoutés à l'exécution via `ADD_TEMPLATE`.
@@ -86,3 +89,39 @@ FINISHED DXF-1
 ```
 
 Le stock initial est de 10 unités pour chaque pièce et chaque système, et 0 drone produit.
+
+## Module ajouté — Gestion de commandes de ventes
+
+Le module le plus récent (voir [`Liste_module.md`](Liste_module.md)) ajoute un carnet de
+commandes de ventes, indépendant du flux de production. Il repose sur trois commandes :
+
+- `ORDER <qty> <Drone>[, ...]` — enregistre une ou plusieurs demandes de vente. Les
+  quantités d'un même drone s'additionnent dans le carnet (`OrderBook`).
+- `SEND` — parcourt les commandes en attente et expédie, pour chaque drone, le minimum
+  entre la quantité commandée et le stock de drones **déjà produits** (`PRODUCE`). Le stock
+  correspondant est décrémenté (`Stock.ConsumeDrone`) et la commande soldée d'autant.
+- `LIST_ORDER` — affiche les commandes restant à honorer.
+
+Exemple :
+
+```
+PRODUCE 2 DXF-1
+STOCK_UPDATED
+ORDER 3 DXF-1
+ORDER_REGISTERED
+LIST_ORDER
+3 DXF-1
+SEND
+SENT 2 DXF-1
+LIST_ORDER
+1 DXF-1
+```
+
+## Design patterns utilisés
+
+| Pattern | Rôle dans le projet | Où |
+|---|---|---|
+| **Command** | Chaque commande de la REPL est un objet `ICommand`, résolu depuis un dictionnaire dans `Program.cs`. Ajouter une commande = ajouter une classe, sans toucher à la boucle. `DroneCommand` factorise le parsing des arguments. | `Commands/` |
+| **Composite** | Un assemblage de drone est un arbre de pièces : `IPart` est implémenté par `SimplePart` (feuille) et `CompositePart` (nœud contenant d'autres pièces), traités uniformément. | `Parts/` |
+| **Builder** | `DroneAssemblyBuilder` construit pas à pas l'arbre d'assemblage et la séquence d'instructions, séparant la logique de construction de la représentation finale. | `Builders/` |
+| **Strategy** | La catégorisation d'un drone (Aérien, Marin, Terrestre, Submersible) est déléguée à des règles interchangeables `ICategoryRule` que le `Categorizer` applique, au lieu d'un gros bloc conditionnel. | `Categories/` |
