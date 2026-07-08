@@ -24,4 +24,6 @@ public class Stock
     public void ConsumePiece(string name, int qty) => Pieces[name] -= qty;
 
     public void AddDrone(string name, int qty) => Drones[name] = GetDrone(name) + qty;
+
+    public void ConsumeDrone(string name, int qty) => Drones[name] = GetDrone(name) - qty;
 }

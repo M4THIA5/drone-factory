@@ -1,6 +1,7 @@
 using DroneFactory;
 
 var stock = new Stock();
+var orders = new OrderBook();
 
 var commands = new Dictionary<string, ICommand>
 {
@@ -10,6 +11,9 @@ var commands = new Dictionary<string, ICommand>
     ["VERIFY"]         = new VerifyCommand(stock),
     ["PRODUCE"]        = new ProduceCommand(stock),
     ["ADD_TEMPLATE"]   = new AddTemplateCommand(stock),
+    ["ORDER"]          = new OrderCommand(orders),
+    ["SEND"]           = new SendCommand(stock, orders),
+    ["LIST_ORDER"]     = new ListOrderCommand(orders),
 };
 
 string? line;
