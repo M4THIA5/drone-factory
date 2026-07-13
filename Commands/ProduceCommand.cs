@@ -15,10 +15,10 @@ public class ProduceCommand : DroneCommand
                 throw new CommandException("Insufficient stock");
 
         foreach (var (piece, qty) in needed)
-            _stock.ConsumePiece(piece, qty);
+            _stock.ConsumePiece(piece, qty, "PRODUCE");
 
         foreach (var (drone, qty) in order)
-            _stock.AddDrone(drone, qty);
+            _stock.AddDrone(drone, qty, "PRODUCE");
 
         Console.WriteLine("STOCK_UPDATED");
     }

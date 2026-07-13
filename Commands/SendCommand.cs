@@ -21,7 +21,7 @@ public class SendCommand : ICommand
             var qty = Math.Min(pending, _stock.GetDrone(drone));
             if (qty <= 0) continue;
 
-            _stock.ConsumeDrone(drone, qty);
+            _stock.ConsumeDrone(drone, qty, "SEND");
             _orders.Fulfill(drone, qty);
             Console.WriteLine($"SENT {qty} {drone}");
             shipped = true;

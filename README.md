@@ -48,6 +48,7 @@ dotnet run < commandes.txt
 | `ORDER <qty> <Drone>[, ...]` | Enregistre une commande de vente dans le carnet de commandes (`ORDER_REGISTERED`). |
 | `SEND` | Expédie les drones déjà produits pour honorer les commandes en attente (`SENT <qty> <Drone>` par ligne, ou `NOTHING_TO_SEND`). |
 | `LIST_ORDER` | Liste les commandes de vente encore en attente (`<qty> <Drone>` par ligne, ou `NO_ORDER`). |
+| `GET_MOVEMENTS` | Affiche l'historique des mouvements de stock (`<SOURCE> <IN\|OUT> <qty> <Nom>` par ligne, ou `NO_MOVEMENT`). |
 
 Drones supportés au démarrage : `DXF-1`, `RDL-1`, `WDS-1`, `DYM-1`. D'autres peuvent être
 ajoutés à l'exécution via `ADD_TEMPLATE`.
@@ -120,6 +121,43 @@ LIST_ORDER
 1 DXF-1
 ```
 
+## Module ajouté — Traçabilité des flux
+
+Ce module (voir [`Liste_module.md`](Liste_module.md)) historise chaque mouvement de
+stock et permet de le consulter. Il repose sur le pattern **Observer** : le `Stock`
+est le *Subject*, un `MovementLog` (l'*Observer*) est abonné au démarrage
+(`stock.Subscribe(...)`).
+
+- Chaque mutation de stock **non nulle** (`ConsumePiece`, `AddPiece`, `AddDrone`,
+  `ConsumeDrone`) notifie les observers avec un `Movement` : commande à l'origine,
+  sens (`IN`/`OUT`), quantité, nom. Le stock initial (seeding) et les no-op de
+  quantité 0 (ex. `ADD_TEMPLATE` qui enregistre un drone à 0) ne sont pas
+  historisés.
+- `GET_MOVEMENTS` rejoue l'historique dans l'ordre chronologique, une ligne par
+  mouvement, ou `NO_MOVEMENT` si vide.
+
+Exemple :
+
+```
+GET_MOVEMENTS
+NO_MOVEMENT
+RECEIVE 3 Hull_HF1
+STOCK_UPDATED
+PRODUCE 1 DXF-1
+STOCK_UPDATED
+SEND
+NOTHING_TO_SEND
+GET_MOVEMENTS
+RECEIVE IN 3 Hull_HF1
+PRODUCE OUT 1 Hull_HF1
+PRODUCE OUT 1 Core_C3D1
+PRODUCE OUT 1 Generator_GF1
+PRODUCE OUT 1 Move_MF1
+PRODUCE OUT 1 Processor_P3D1
+PRODUCE OUT 1 System_S3D1
+PRODUCE IN 1 DXF-1
+```
+
 ## Design patterns utilisés
 
 | Pattern | Rôle dans le projet | Où |
@@ -128,3 +166,4 @@ LIST_ORDER
 | **Composite** | Un assemblage de drone est un arbre de pièces : `IPart` est implémenté par `SimplePart` (feuille) et `CompositePart` (nœud contenant d'autres pièces), traités uniformément. | `Parts/` |
 | **Builder** | `DroneAssemblyBuilder` construit pas à pas l'arbre d'assemblage et la séquence d'instructions, séparant la logique de construction de la représentation finale. | `Builders/` |
 | **Strategy** | La catégorisation d'un drone (Aérien, Marin, Terrestre, Submersible) est déléguée à des règles interchangeables `ICategoryRule` que le `Categorizer` applique, au lieu d'un gros bloc conditionnel. | `Categories/` |
+| **Observer** | Le `Stock` (*Subject*) notifie ses `IStockObserver` à chaque mouvement ; `MovementLog` enregistre l'historique consulté par `GET_MOVEMENTS`, sans coupler le `Stock` à la journalisation. | `Movements/` |

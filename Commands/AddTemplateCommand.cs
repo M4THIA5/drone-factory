@@ -41,7 +41,7 @@ public class AddTemplateCommand : DroneCommand
 
         Categorizer.Validate(recipe);
         Catalogue.Drones[name] = recipe;
-        _stock.AddDrone(name, 0);
+        _stock.AddDrone(name, 0, "ADD_TEMPLATE");
 
         Console.WriteLine("TEMPLATE_ADDED");
     }

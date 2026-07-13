@@ -2,6 +2,8 @@ using DroneFactory;
 
 var stock = new Stock();
 var orders = new OrderBook();
+var movements = new MovementLog();
+stock.Subscribe(movements);
 
 var commands = new Dictionary<string, ICommand>
 {
@@ -15,6 +17,7 @@ var commands = new Dictionary<string, ICommand>
     ["ORDER"]          = new OrderCommand(orders),
     ["SEND"]           = new SendCommand(stock, orders),
     ["LIST_ORDER"]     = new ListOrderCommand(orders),
+    ["GET_MOVEMENTS"]  = new GetMovementsCommand(movements),
 };
 
 string? line;

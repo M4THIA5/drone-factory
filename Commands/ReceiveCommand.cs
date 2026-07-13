@@ -38,9 +38,9 @@ public class ReceiveCommand : ICommand
         foreach (var (name, qty) in received)
         {
             if (Catalogue.Drones.ContainsKey(name))
-                _stock.AddDrone(name, qty);
+                _stock.AddDrone(name, qty, "RECEIVE");
             else
-                _stock.AddPiece(name, qty);
+                _stock.AddPiece(name, qty, "RECEIVE");
         }
 
         Console.WriteLine("STOCK_UPDATED");
