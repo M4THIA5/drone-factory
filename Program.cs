@@ -10,6 +10,7 @@ var commands = new Dictionary<string, ICommand>
     ["INSTRUCTIONS"]   = new InstructionsCommand(),
     ["VERIFY"]         = new VerifyCommand(stock),
     ["PRODUCE"]        = new ProduceCommand(stock),
+    ["RECEIVE"]        = new ReceiveCommand(stock),
     ["ADD_TEMPLATE"]   = new AddTemplateCommand(stock),
     ["ORDER"]          = new OrderCommand(orders),
     ["SEND"]           = new SendCommand(stock, orders),

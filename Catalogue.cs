@@ -3,10 +3,37 @@ namespace DroneFactory;
 public record DroneRecipe(
     string Hull,
     string Core,
-    string Generator,
-    string Move,
+    IReadOnlyList<string> Generators,
+    IReadOnlyList<string> Moves,
     string Processor,
-    string System);
+    string System)
+{
+    /// All physical pieces plus the system, in canonical slot order, with
+    /// duplicates preserved (a recipe may repeat the same generator or move).
+    public IEnumerable<string> AllPieces()
+    {
+        yield return Hull;
+        yield return Core;
+        foreach (var generator in Generators) yield return generator;
+        foreach (var move in Moves) yield return move;
+        yield return Processor;
+        yield return System;
+    }
+
+    /// Same pieces as AllPieces() but folded into (piece, count) entries,
+    /// keeping first-seen order — used for per-drone stock listings.
+    public IEnumerable<KeyValuePair<string, int>> PieceCounts()
+    {
+        var counts = new Dictionary<string, int>();
+        var order = new List<string>();
+        foreach (var piece in AllPieces())
+        {
+            if (!counts.ContainsKey(piece)) order.Add(piece);
+            counts[piece] = counts.GetValueOrDefault(piece) + 1;
+        }
+        foreach (var piece in order) yield return new(piece, counts[piece]);
+    }
+}
 
 public enum PieceKind
 {
@@ -67,10 +94,10 @@ public static class Catalogue
     public static readonly Dictionary<string, DroneRecipe> Drones =
         new()
         {
-            ["DXF-1"] = new("Hull_HF1", "Core_C3D1", "Generator_GF1", "Move_MF1", "Processor_P3D1", "System_S3D1"),
-            ["RDL-1"] = new("Hull_HG1", "Core_CG1",  "Generator_GG1", "Move_ML1", "Processor_PG1",  "System_SG1"),
-            ["WDS-1"] = new("Hull_HS1", "Core_C3D1", "Generator_GS1", "Move_MS1", "Processor_P3D1", "System_S3D1"),
-            ["DYM-1"] = new("Hull_HG1", "Core_CG1",  "Generator_GG1", "Move_MM1", "Processor_PG1",  "System_SG1"),
+            ["DXF-1"] = new("Hull_HF1", "Core_C3D1", new[] { "Generator_GF1" }, new[] { "Move_MF1" }, "Processor_P3D1", "System_S3D1"),
+            ["RDL-1"] = new("Hull_HG1", "Core_CG1",  new[] { "Generator_GG1" }, new[] { "Move_ML1" }, "Processor_PG1",  "System_SG1"),
+            ["WDS-1"] = new("Hull_HS1", "Core_C3D1", new[] { "Generator_GS1" }, new[] { "Move_MS1" }, "Processor_P3D1", "System_S3D1"),
+            ["DYM-1"] = new("Hull_HG1", "Core_CG1",  new[] { "Generator_GG1" }, new[] { "Move_MM1" }, "Processor_PG1",  "System_SG1"),
         };
 
     public static IReadOnlySet<string> TypesOf(string piece) =>

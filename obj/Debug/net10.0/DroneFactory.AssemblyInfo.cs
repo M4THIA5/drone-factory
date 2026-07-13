@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DroneFactory")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eb920bea34fef09b8276ed1506251e1c6b16d7fa")]
 [assembly: System.Reflection.AssemblyProductAttribute("DroneFactory")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DroneFactory")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

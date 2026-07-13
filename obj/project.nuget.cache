@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9pHAhrfNw2g=",
+  "dgSpecHash": "fqEiDwPIOCk=",
   "success": true,
-  "projectFilePath": "/home/mathias/ESGI/design-patern/DroneFactory/DroneFactory.csproj",
+  "projectFilePath": "/home/mathias/Perso/drone-factory/DroneFactory.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

@@ -12,10 +12,11 @@ public class NeededStocksCommand : DroneCommand
             var recipe = Catalogue.Drones[drone];
             Console.WriteLine($"{qty} {drone} :");
 
-            foreach (var piece in new[] { recipe.Hull, recipe.Core, recipe.Generator, recipe.Move, recipe.Processor, recipe.System })
+            foreach (var (piece, count) in recipe.PieceCounts())
             {
-                Console.WriteLine($"{qty} {piece}");
-                total[piece] = total.GetValueOrDefault(piece) + qty;
+                var pieceQty = count * qty;
+                Console.WriteLine($"{pieceQty} {piece}");
+                total[piece] = total.GetValueOrDefault(piece) + pieceQty;
             }
         }
 

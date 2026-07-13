@@ -12,28 +12,46 @@ public class DroneAssemblyBuilder
 
         var hull = new SimplePart(recipe.Hull);
         var core = new SimplePart(recipe.Core);
-        var generator = new SimplePart(recipe.Generator);
-        var move = new SimplePart(recipe.Move);
+        var generators = recipe.Generators.Select(g => new SimplePart(g)).ToList();
+        var moves = recipe.Moves.Select(m => new SimplePart(m)).ToList();
         var processor = new SimplePart(recipe.Processor);
 
-        foreach (var part in new IPart[] { hull, core, generator, move, processor })
+        // The system is installed (not pulled from stock as a standalone piece).
+        var stockOut = new List<IPart> { hull, core };
+        stockOut.AddRange(generators);
+        stockOut.AddRange(moves);
+        stockOut.Add(processor);
+        foreach (var part in stockOut)
             steps.Add($"GET_OUT_STOCK 1 {part.Label}");
 
         var coreWithSystem = new SimplePart(recipe.Core, recipe.System);
         steps.Add($"INSTALL {recipe.System} {recipe.Core}");
 
+        // Generators are mounted in the hull before the main module, then the
+        // movement modules; each of those intermediate assemblies is named.
+        IPart acc = hull;
+        var tmp = 1;
+        foreach (var generator in generators)
+        {
+            var node = new CompositePart($"TMP{tmp++}", acc, generator);
+            steps.Add(Assemble(node, acc, generator));
+            acc = node;
+        }
 
-        var tmp1 = new CompositePart("TMP1", hull, generator);
-        steps.Add(Assemble(tmp1, hull, generator));
+        foreach (var move in moves)
+        {
+            var node = new CompositePart($"TMP{tmp++}", acc, move);
+            steps.Add(Assemble(node, acc, move));
+            acc = node;
+        }
 
-        var tmp2 = new CompositePart("TMP2", tmp1, move);
-        steps.Add(Assemble(tmp2, tmp1, move));
+        // Main module (with its system) then control module: left unnamed, the
+        // final result being the known drone itself.
+        var withCore = new CompositePart(null, acc, coreWithSystem);
+        steps.Add(Assemble(withCore, acc, coreWithSystem));
 
-        var partial = new CompositePart(null, tmp2, coreWithSystem);
-        steps.Add(Assemble(partial, tmp2, coreWithSystem));
-
-        var final = new CompositePart(null, partial, processor);
-        steps.Add(Assemble(final, partial, processor));
+        var final = new CompositePart(null, withCore, processor);
+        steps.Add(Assemble(final, withCore, processor));
 
         steps.Add($"FINISHED {droneName}");
 

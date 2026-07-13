@@ -43,6 +43,7 @@ dotnet run < commandes.txt
 | `INSTRUCTIONS <qty> <Drone>[, ...]` | Émet la séquence d'instructions d'assemblage. |
 | `VERIFY <qty> <Drone>[, ...]` | Répond `AVAILABLE` ou `UNAVAILABLE` selon l'état du stock. |
 | `PRODUCE <qty> <Drone>[, ...]` | Décrémente le stock et produit les drones (`STOCK_UPDATED`). |
+| `RECEIVE <qty> <Nom>[, ...]` | Ajoute au stock des pièces, systèmes ou drones (`STOCK_UPDATED`). |
 | `ADD_TEMPLATE <Nom>, <Piece1>, ..., <PieceN>` | Enregistre un nouveau modèle de drone (`TEMPLATE_ADDED`), utilisable ensuite dans toutes les commandes. |
 | `ORDER <qty> <Drone>[, ...]` | Enregistre une commande de vente dans le carnet de commandes (`ORDER_REGISTERED`). |
 | `SEND` | Expédie les drones déjà produits pour honorer les commandes en attente (`SENT <qty> <Drone>` par ligne, ou `NOTHING_TO_SEND`). |
@@ -53,10 +54,12 @@ ajoutés à l'exécution via `ADD_TEMPLATE`.
 
 ### Templates de drones (`ADD_TEMPLATE`)
 
-Un template doit contenir exactement une pièce de chaque type (coque, module principal,
-générateur, module de déplacement, module de contrôle, système). Il est validé avant
-enregistrement :
+Un template doit contenir exactement une coque, un module principal, un module de contrôle
+et un système, **1 ou 2 générateurs**, et **1 à 3 modules de déplacement**. Il est validé
+avant enregistrement :
 
+- le nombre de générateurs (1-2) et de modules de déplacement (1-3) doit être respecté ;
+- un drone avec **au moins 2 modules de déplacement** doit avoir **exactement 2 générateurs** ;
 - le système doit être installable sur le module principal (types du système ⊆ types du core) ;
 - le module de contrôle doit être compatible avec le système (au moins un type en commun) ;
 - le drone doit appartenir à au moins une catégorie : **Aérien**, **Marin**, **Terrestre** ou

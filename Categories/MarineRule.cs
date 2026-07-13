@@ -7,5 +7,5 @@ public class MarineRule : ICategoryRule
     public bool Matches(DroneRecipe r) =>
         Catalogue.TypesOf(r.Hull).Contains("S") &&
         Catalogue.TypesOf(r.System).Contains("2D") &&
-        Catalogue.TypesOf(r.Move).Contains("M");
+        r.Moves.Any(m => Catalogue.TypesOf(m).Contains("M"));
 }

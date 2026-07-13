@@ -41,7 +41,7 @@ public abstract class DroneCommand : ICommand
         foreach (var (drone, qty) in order)
         {
             var recipe = Catalogue.Drones[drone];
-            foreach (var piece in new[] { recipe.Hull, recipe.Core, recipe.Generator, recipe.Move, recipe.Processor, recipe.System })
+            foreach (var piece in recipe.AllPieces())
                 needed[piece] = needed.GetValueOrDefault(piece) + qty;
         }
 

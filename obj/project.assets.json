@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/mathias/ESGI/design-patern/DroneFactory/DroneFactory.csproj",
+      "projectUniqueName": "/home/mathias/Perso/drone-factory/DroneFactory.csproj",
       "projectName": "DroneFactory",
-      "projectPath": "/home/mathias/ESGI/design-patern/DroneFactory/DroneFactory.csproj",
+      "projectPath": "/home/mathias/Perso/drone-factory/DroneFactory.csproj",
       "packagesPath": "/home/mathias/.nuget/packages/",
-      "outputPath": "/home/mathias/ESGI/design-patern/DroneFactory/obj/",
+      "outputPath": "/home/mathias/Perso/drone-factory/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/mathias/.nuget/NuGet/NuGet.Config"
@@ -66,7 +66,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/10.0.107/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/10.0.109/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",
